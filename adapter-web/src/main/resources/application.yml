@@ -17,9 +17,6 @@ spring:
       # 타임아웃이 없으면 DB 가 죽었을 때 헬스 엔드포인트가 응답하지 않고 멈춘다.
       connection-timeout: 5000
       validation-timeout: 3000
-      data-source-properties:
-        oracle.net.CONNECT_TIMEOUT: 5000
-        oracle.jdbc.ReadTimeout: 10000
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 

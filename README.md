@@ -71,6 +71,7 @@ curl http://127.0.0.1:8280/actuator/health
 다시 띄우면 Liquibase 가 마이그레이션을 처음부터 적용한다.
 시드 데이터가 필요하면 시드 스크립트를 다시 실행한다 (이슈 #42 에서 추가).
 `docker compose stop` 과 `start` 는 데이터를 유지한다.
+<!-- verified: 2026-08-02 | docker compose down && up -d 후 bootRun 로그에 V001 두 changeset 재적용 -->
 
 ## 빌드와 테스트
 

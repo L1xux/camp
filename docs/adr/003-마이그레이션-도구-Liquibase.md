@@ -9,7 +9,7 @@
 | 항목 | 확인 내용 |
 |---|---|
 | Flyway Undo | Community Edition 에 없다. Pro 또는 Enterprise 가 필요하다 |
-| Liquibase rollback | 오픈소스에서 지원한다 (`--rollback` 주석 또는 rollback 블록) |
+| Liquibase rollback | 오픈소스에서 지원한다 (`--rollback` 주석 또는 rollback 블록). V001 로 실행 확인 |
 | Oracle 의 DDL 처리 | DDL 앞뒤로 암묵적 커밋이 일어난다. 도구와 무관하게 DDL 의 트랜잭션 롤백은 불가능하다 |
 | Spring Boot 3.5.16 관리 버전 | Flyway 11.7.2, Liquibase 4.31.1 |
 
@@ -20,7 +20,9 @@
 ## 이유
 
 1. 롤백을 도구가 실행할 수 있다. Flyway Community 로는 undo 파일을 만들어도 실행할 수단이 없어
-   규칙이 문서로만 남는다.
+   규칙이 문서로만 남는다. Liquibase CLI 로 V001 을 되돌려 `brand` 테이블이 사라지고 이력이
+   0건이 되는 것, `update` 로 다시 적용되는 것을 확인했다. 명령은 `docs/RUNBOOK.md` 에 있다.
+   <!-- verified: 2026-08-02 | liquibase/liquibase:4.31.1 컨테이너로 rollbackCount 2 실행 후 user_tables, databasechangelog 조회 -->
 2. SQL 형식 changelog 를 쓰면 Flyway 의 장점인 "순수 SQL 가독성" 을 대부분 유지한다.
    XML 이나 YAML 로 스키마를 기술하지 않는다.
 3. Spring Boot 가 두 도구를 동등하게 지원하므로 통합 비용 차이가 없다.
