@@ -8,6 +8,11 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: chore
+    ignore:
+      # Boot 메이저 업그레이드는 Spring AI, Oracle JDBC, 마이그레이션 도구 호환을 다시
+      # 확인해야 하는 결정이다. ADR-002 에서 3.5 라인을 선택했으므로 자동 PR 을 막는다.
+      - dependency-name: "org.springframework.boot:spring-boot-dependencies"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
