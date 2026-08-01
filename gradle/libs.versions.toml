@@ -1,7 +1,7 @@
 # 의존성 버전 단일 출처. 조합 근거는 docs/adr/002-빌드-툴체인-버전조합.md 참조.
 
 [versions]
-spring-boot = "3.5.16"
+spring-boot = "4.1.0"
 spring-ai = "1.1.8"
 ojdbc = "23.26.3.0.0"
 junit = "5.12.2"
