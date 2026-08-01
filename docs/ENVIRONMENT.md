@@ -1,6 +1,11 @@
 # 개발 환경 — 알려진 문제와 검증 절차
 
-## 1. Winsock 카탈로그 손상 (2026-08-01 발견, D1 착수 시)
+## 1. Winsock 카탈로그 손상 (2026-08-01 발견 → **2026-08-02 해결됨**)
+
+> **해결 확인 (2026-08-02)**: `netsh winsock reset` + 재부팅 후 재검증.
+> `java tools/SockDiag.java` 8줄 전부 OK — 문제였던 `bind ::` 포함. `git ls-remote origin` 정상.
+> 아래 내용은 재발 시 참조용 기록으로 남긴다. Docker 빌드 우회는 불필요해졌다.
+
 
 ### 증상
 
@@ -96,18 +101,24 @@ cd C:/Users/oo/file/project/camp
 <scratchpad>/gradle-9.6.1/bin/gradle wrapper --gradle-version 9.6.1
 ```
 
-## 5. 로컬 ↔ 원격 git 불일치 (미해결)
+## 5. 로컬 ↔ 원격 git 불일치 (**2026-08-02 해결됨**)
 
 `git push`가 위 네트워크 문제로 실패해, 원격(GitHub)에는 MCP API로 파일을 올렸다.
-따라서 **로컬 커밋 히스토리와 원격 커밋 히스토리가 다르다.**
+그 결과 로컬과 원격이 **공통 조상이 없는 별개 계보**가 되어 있었다 (`git merge-base` 빈 출력).
 
-- 원격에 있는 것: `docs/PLAN.md`, `docs/adr/001-기술스택-선정.md` (내용은 로컬과 동일)
-- 로컬에만 있는 것: 커밋 4개 + 이 문서 + `tools/SockDiag.java`
-
-네트워크 복구 후 정리 순서:
+정리 방식 — 로컬 커밋 5개를 `origin/main` 위로 rebase해 한 줄로 이어붙였다:
 
 ```bash
-git fetch origin
-git rebase origin/main     # 또는 내용이 같으므로 로컬 기준으로 강제 정렬 판단
+git branch backup-pre-rebase HEAD       # 안전망
+git rebase origin/main                  # --allow-unrelated-histories 는 merge 전용, rebase엔 불필요
+# add/add 충돌 2건(PLAN.md, ADR-001) → 로컬(--theirs) 채택
 git push -u origin main
 ```
+
+- 원격의 `Initial commit`과 `README.md`(빈 파일) 보존
+- 원격에만 있던 중복 커밋 3개는 rebase 과정에서 로컬 커밋에 흡수됨
+- 원격 ADR에 있던 오타(`두텅다`)는 로컬 버전 채택으로 해소
+- 검증: `git diff backup-pre-rebase HEAD` → `README.md` 추가 외 차이 없음
+
+**교훈**: 네트워크 장애 시 원격에 API로 직접 올리면 히스토리가 갈라진다.
+다음에는 로컬 커밋만 쌓아두고 복구 후 push 한 번으로 처리한다.
