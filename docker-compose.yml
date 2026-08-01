@@ -1,0 +1,22 @@
+services:
+  oracle:
+    image: gvenzl/oracle-free:23.26.2-slim-faststart
+    container_name: camp-oracle
+    ports:
+      # 호스트 바인딩 주소를 명시한다. 와일드카드 기본값은 이 PC 에서 기동이 실패한 이력이 있다.
+      - "127.0.0.1:1522:1521"
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?.env 에 ORACLE_PASSWORD 가 필요하다}
+      # 이미지가 FREEPDB1 안에 이 계정을 만들고 자기 스키마 권한만 부여한다.
+      APP_USER: ${DB_USER:?.env 에 DB_USER 가 필요하다}
+      APP_USER_PASSWORD: ${DB_PASSWORD:?.env 에 DB_PASSWORD 가 필요하다}
+    healthcheck:
+      # 컨테이너가 running 이어도 DB 는 아직 접속을 못 받는다. 이 스크립트가 실제 접속을 확인한다.
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+# 볼륨을 두지 않는다. dev 는 데이터 소실을 허용하고 시드 스크립트 재실행으로 복구한다.
+# docker compose stop/start 는 데이터가 남고, docker compose down 은 사라진다.

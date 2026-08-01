@@ -58,9 +58,58 @@ git ls-remote origin
 1번의 `bind ::` 가 여전히 FAIL 이면 Gradle은 못 돈다. 그 경우의 대안(미검증):
 Docker 컨테이너 안에서 빌드(호스트 Winsock 우회) → `docker run --rm -v $PWD:/w -w /w gradle:9.6.1-jdk21 gradle build`
 
+## 1-2. 이슈 #32 에서 겪은 문제 (2026-08-02)
+
+**`bootRun` 이 레포 루트의 `.env` 를 못 읽음**
+
+`bootRun` 의 기본 작업 디렉터리는 실행 모듈 디렉터리(`adapter-web/`)다.
+`spring.config.import: optional:file:./.env[.properties]` 가 `adapter-web/.env` 를 찾아
+아무것도 못 읽었고, DB 접속이 `ORA-01017: invalid credential` 로 실패했다.
+
+조치: `adapter-web/build.gradle` 에서 `bootRun.workingDir = rootProject.projectDir` 로 고정.
+
+**DB 가 멈추면 헬스 엔드포인트가 응답하지 않음**
+
+컨테이너를 정지시킨 상태에서 `/actuator/health` 를 호출하니 `DOWN` 을 반환하지 않고
+15초 타임아웃까지 멈춰 있었다. 커넥션 획득 타임아웃이 없어서다.
+
+조치: `spring.datasource.hikari.connection-timeout: 5000` 설정. 이후 5초 만에 `DOWN` 을 반환한다.
+DB 를 다시 띄우면 앱 재기동 없이 커넥션 풀이 회복된다.
+재현은 `tools/measure-health-timeout.sh` 로 한다.
+
+```
+== 사전 확인: 앱이 떠 있고 DB 가 붙어 있는가
+HTTP 200 | time_total=0.160533s
+== DB 정지 상태에서 헬스 호출
+HTTP 503 | time_total=5.041087s
+== 커넥션 풀 회복 확인
+HTTP 200 | time_total=0.006613s
+```
+<!-- verified: 2026-08-02 | bash tools/measure-health-timeout.sh -->
+
+처음에는 Hikari 설정과 함께 `oracle.net.CONNECT_TIMEOUT`, `oracle.jdbc.ReadTimeout` 도 넣었으나
+효과를 분리해 재보니 Oracle 속성은 기여하지 않아 제거했다. 설정을 하나씩만 남기고 잰 결과다.
+
+| 남긴 설정 | DB 정지 상태의 헬스 응답 |
+|---|---|
+| Hikari `connection-timeout: 5000`, `validation-timeout: 3000` | `HTTP 503 \| time_total=5.017912s` |
+| Oracle `net.CONNECT_TIMEOUT: 5000`, `jdbc.ReadTimeout: 10000` | `HTTP 503 \| time_total=30.040854s` |
+
+30초는 Hikari `connection-timeout` 의 기본값이다. 컨테이너를 정지하면 연결이 늘어지는 것이 아니라
+포트가 닫히므로, 연결 수립 대기 시간을 제한하는 Oracle 속성은 이 시나리오에서 발동하지 않는다.
+포트는 열린 채 응답만 느려지는 장애에서의 효과는 측정하지 않았다.
+<!-- verified: 2026-08-02 | 설정별로 application.yml 을 바꿔 bootRun 후 docker compose stop oracle, curl -w time_total -->
+<!-- unverified: 포트가 열린 채 응답만 느려지는 장애는 재현하지 않음 -->
+
+**컨테이너 기동 실패는 겪지 않았다**
+
+`docker compose up -d` 는 한 번에 성공했다. 헬스체크가 `healthy` 가 되기까지 40초 안팎이
+걸린다. 그 전에 접속하면 `ORA-12514: FREEPDB1 서비스가 리스너에 등록되지 않았습니다` 가 난다.
+메모리는 Docker 에 7.58GiB 가 있어 Oracle Free 요건(2GB+)을 넘는다.
+
 ## 2. 로컬 실행 포트
 
-5173·8000·5273·8273은 다른 프로젝트가 점유 중이므로 CAMP는 다음을 쓴다:
+5173, 8000, 5273, 8273은 다른 프로젝트가 점유 중이므로 CAMP는 다음을 쓴다:
 
 | 용도 | 포트 |
 |---|---|
@@ -70,6 +119,15 @@ Docker 컨테이너 안에서 빌드(호스트 Winsock 우회) → `docker run -
 
 **서버 바인딩은 반드시 `0.0.0.0` 또는 `127.0.0.1`을 명시**한다. 와일드카드 기본값(`::`)에
 의존하면 위 문제가 재발한다. (Winsock 복구 후에도 명시적 바인딩을 유지 — 재현성 확보)
+
+Oracle 컨테이너는 `docker-compose.yml` 에서 `127.0.0.1:1522:1521` 로 매핑한다.
+루프백에만 열려 외부에서 접근할 수 없다.
+
+```
+$ netstat -ano | grep ":1522" | grep LISTENING
+  TCP    127.0.0.1:1522         0.0.0.0:0              LISTENING       18136
+```
+<!-- verified: 2026-08-02 | netstat -ano | grep ":1522" | grep LISTENING -->
 
 ## 3. 확정 버전 (2026-08-02 이슈 #31에서 실제 빌드로 검증)
 
