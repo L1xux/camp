@@ -159,7 +159,33 @@ export JAVA_HOME="/c/Program Files/Eclipse Adoptium/jdk-21.0.9.10-hotspot"
 ./gradlew resolveAndLockAll --write-locks   # 의존성 변경 후 잠금 갱신
 ```
 
-## 5. 로컬 ↔ 원격 git 불일치 (**2026-08-02 해결됨**)
+## 5. 도구 경로와 셸 제약 (2026-08-02)
+
+winget 으로 설치한 도구는 이 셸의 `PATH` 에 잡히지 않는다. 매번 경로를 지정한다.
+
+```bash
+export PATH="$PATH:/c/Program Files/GitHub CLI"     # gh 2.97.0
+/c/Users/oo/AppData/Local/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_Microsoft.Winget.Source_8wekyb3d8bbwe/gitleaks.exe git --no-banner
+```
+<!-- verified: 2026-08-02 | gh auth status -> Logged in to github.com account L1xux / gitleaks git -> 32 commits scanned, no leaks found -->
+
+`gh` 는 `L1xux` 계정으로 인증돼 있고 토큰은 keyring 에 있다. 스코프는 `gist`, `read:org`,
+`repo`, `workflow`. `gh auth login` 은 브라우저를 여는 대화형 절차라 Claude 가 실행할 수 없다.
+
+**Bash 도구에서 PowerShell 문법을 쓰지 않는다.** here-string(`@'...'@`)을 커밋 메시지에
+쓰면 리터럴 `@` 가 제목에 박힌다. 여러 줄 문자열은 heredoc 이나 `git commit -F -` 로 넘긴다.
+
+```bash
+git commit -F - <<'EOF'
+제목
+
+본문
+EOF
+```
+
+멀티라인 `python -c` 도 이 셸에서 깨진다. 스크립트 파일로 빼서 실행한다.
+
+## 6. 로컬 ↔ 원격 git 불일치 (**2026-08-02 해결됨**)
 
 `git push`가 위 네트워크 문제로 실패해, 원격(GitHub)에는 MCP API로 파일을 올렸다.
 그 결과 로컬과 원격이 **공통 조상이 없는 별개 계보**가 되어 있었다 (`git merge-base` 빈 출력).

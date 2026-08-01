@@ -154,10 +154,20 @@ domain      <- application <- adapter-web / adapter-mcp / adapter-batch
 
 ```bash
 export JAVA_HOME="/c/Program Files/Eclipse Adoptium/jdk-21.0.9.10-hotspot"
+export PATH="$PATH:/c/Program Files/GitHub CLI"   # gh. 인증은 끝나 있다
+
 ./gradlew build                              # 컴파일 + 테스트 + 아키텍처 검사
 ./gradlew :adapter-web:bootRun               # http://127.0.0.1:8280/actuator/health
 ./gradlew resolveAndLockAll --write-locks    # 의존성 변경 후 잠금 갱신
+
+docker compose up -d                         # Oracle. healthy 까지 40초 안팎
+docker exec -i camp-oracle sqlplus -s camp/비밀번호@//localhost:1521/FREEPDB1   # .env 의 DB_PASSWORD
+
+# 앱 종료. bootRun 을 다시 띄우기 전에만 쓴다
+netstat -ano | grep ":8280" | grep LISTENING | awk '{print $5}' | sort -u | while read pid; do taskkill //PID $pid //F; done
 ```
+
+`gitleaks` 경로와 셸 제약은 `docs/ENVIRONMENT.md` 에 있다.
 
 포트: 백엔드 8280, 프론트 5280, Oracle 1522. 서버 바인딩 주소는 `0.0.0.0` 을 명시한다
 (기본값에 의존하면 이 PC 에서 기동이 실패한 이력이 있다. `docs/ENVIRONMENT.md` 참조).
