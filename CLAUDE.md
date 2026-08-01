@@ -161,7 +161,7 @@ export PATH="$PATH:/c/Program Files/GitHub CLI"   # gh. 인증은 끝나 있다
 ./gradlew resolveAndLockAll --write-locks    # 의존성 변경 후 잠금 갱신
 
 docker compose up -d                         # Oracle. healthy 까지 40초 안팎
-docker exec -i camp-oracle sqlplus -s camp/$DB_PASSWORD@//localhost:1521/FREEPDB1
+docker exec -i camp-oracle sqlplus -s camp/비밀번호@//localhost:1521/FREEPDB1   # .env 의 DB_PASSWORD
 
 # 앱 종료. bootRun 을 다시 띄우기 전에만 쓴다
 netstat -ano | grep ":8280" | grep LISTENING | awk '{print $5}' | sort -u | while read pid; do taskkill //PID $pid //F; done
