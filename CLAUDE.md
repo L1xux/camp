@@ -56,10 +56,13 @@ domain      <- application <- adapter-web / adapter-mcp / adapter-batch
                            <- infra
 ```
 
-- `domain` 에는 라이브러리를 선언하지 않는다 (자바 표준 라이브러리만).
-- adapter 는 `infra` 를 컴파일 시점에 참조하지 않는다. `adapter-web` 이 `runtimeOnly` 로만 조립한다.
-- 이 규칙을 어기면 컴파일이 실패하고, `build.gradle` 을 고쳐 우회하면
-  `ArchitectureTest` 가 실패한다.
+의존성 규칙 두 가지:
+
+- `domain` 에는 라이브러리를 선언하지 않는다 (JDK 표준 라이브러리만).
+- `adapter-web`, `adapter-mcp`, `adapter-batch` 는 `infra` 를 컴파일 시점에 참조하지 않는다.
+  `adapter-web` 이 `infra`, `adapter-mcp`, `adapter-batch` 를 `runtimeOnly` 로 조립한다.
+
+위반하면 컴파일 에러가 나고, `build.gradle` 을 고쳐 우회하면 `ArchitectureTest` 가 실패한다.
 
 ## 명령어
 
