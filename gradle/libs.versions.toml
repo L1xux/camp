@@ -7,6 +7,8 @@ ojdbc = "23.26.3.0.0"
 junit = "5.12.2"
 assertj = "3.27.7"
 archunit = "1.4.2"
+spotless = "8.9.0"
+palantir-java-format = "2.96.0"
 
 [libraries]
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
@@ -32,3 +34,4 @@ archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

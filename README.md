@@ -79,8 +79,42 @@ curl http://127.0.0.1:8280/actuator/health
 
 ```bash
 ./gradlew build                              # 컴파일, 테스트, 아키텍처 검증
+./gradlew spotlessCheck                      # 포맷 검사 (CI 의 정적 분석 단계와 동일)
+./gradlew spotlessApply                      # 포맷 자동 수정
 ./gradlew resolveAndLockAll --write-locks    # 의존성 변경 후 잠금 갱신
 ```
+
+## 개발 가이드
+
+### 커밋 훅 설치
+
+새로 클론했다면 한 번 실행한다. 커밋할 때마다 포맷터와 시크릿 스캔이 돈다.
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+### 브랜치와 커밋
+
+- 브랜치: `feat/{이슈번호}-{요약}`, `fix/{이슈번호}-{요약}`. 머지 후 삭제한다
+- 커밋 메시지: Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`)
+- PR 크기: 수기 코드 기준 diff 400줄을 넘으면 쪼갠다. 잠금 파일 같은 자동 생성 파일로
+  넘긴 경우 PR 본문에 그 사실을 밝힌다
+
+`main` 은 보호돼 있다. 직접 push 할 수 없고 PR 과 CI 통과를 거쳐야 머지된다.
+
+### main 에 실수로 커밋했을 때
+
+push 가 거부된다. 커밋을 새 브랜치로 옮기고 `main` 을 원격 상태로 되돌린다.
+
+```bash
+git branch feat/33-작업이름          # 현재 커밋을 가리키는 브랜치를 만든다
+git reset --hard origin/main         # main 을 원격과 같게 되돌린다
+git checkout feat/33-작업이름        # 옮긴 브랜치에서 계속 작업한다
+```
+
+`git reset --hard` 는 커밋되지 않은 변경을 지운다. 실행 전에 `git status` 로 확인한다.
 
 ## 문서
 

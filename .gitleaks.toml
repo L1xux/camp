@@ -1,0 +1,7 @@
+# 기본 룰셋을 그대로 쓰고 아래 예외만 더한다.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "테스트 픽스처의 가짜 토큰. 실제 시크릿이 아니며 이 경로 밖에서는 허용하지 않는다."
+paths = ['''src/test/resources/fixtures/.*''']
