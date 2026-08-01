@@ -21,8 +21,9 @@
 
 1. 롤백을 도구가 실행할 수 있다. Flyway Community 로는 undo 파일을 만들어도 실행할 수단이 없어
    규칙이 문서로만 남는다. Liquibase CLI 로 V001 을 되돌려 `brand` 테이블이 사라지고 이력이
-   0건이 되는 것, `update` 로 다시 적용되는 것을 확인했다. 명령은 `docs/RUNBOOK.md` 에 있다.
-   <!-- verified: 2026-08-02 | liquibase/liquibase:4.31.1 컨테이너로 rollbackCount 2 실행 후 user_tables, databasechangelog 조회 -->
+   0건이 되는 것, `update` 로 다시 적용되는 것을 확인했다.
+   롤백 실행 절차를 RUNBOOK 에 넣는 것은 이슈 #47 에서 한다.
+   <!-- verified: 2026-08-02 | docker run --rm --network camp_default -v .../infra/src/main/resources:/liquibase/changelog liquibase/liquibase:4.31.1 --changeLogFile=db/changelog/db.changelog-master.yaml rollbackCount 2 -> user_tables 에서 BRAND 사라짐, databasechangelog 0건 -->
 2. SQL 형식 changelog 를 쓰면 Flyway 의 장점인 "순수 SQL 가독성" 을 대부분 유지한다.
    XML 이나 YAML 로 스키마를 기술하지 않는다.
 3. Spring Boot 가 두 도구를 동등하게 지원하므로 통합 비용 차이가 없다.

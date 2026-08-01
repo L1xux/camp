@@ -62,6 +62,8 @@ curl http://127.0.0.1:8280/actuator/health
 ```
 
 컨테이너가 `healthy` 가 되기 전에 앱을 띄우면 `ORA-12514` 로 실패한다.
+`.env` 가 없으면 컨테이너를 만들기 전에 `required variable ORACLE_PASSWORD is missing a value` 로 멈춘다.
+<!-- verified: 2026-08-02 | docker compose up -d 후 bootRun, curl /actuator/health -> {"status":"UP",...} / mv .env .env.bak && docker compose up -d -->
 
 포트는 백엔드 8280, Oracle 1522 를 쓴다. 다른 프로젝트와 충돌을 피하기 위한 것이다.
 
@@ -86,6 +88,6 @@ curl http://127.0.0.1:8280/actuator/health
 |---|---|
 | [docs/PLAN.md](docs/PLAN.md) | 기획: 문제 정의, 범위, 아키텍처, 품질 목표 |
 | [docs/adr/](docs/adr/) | 되돌리기 비싼 결정의 근거 |
-| [docs/RUNBOOK.md](docs/RUNBOOK.md) | 운영 절차: 기동, DB 초기화, 마이그레이션 복구 |
+| [docs/RUNBOOK.md](docs/RUNBOOK.md) | 운영 절차: DB 마이그레이션과 복구, 계정 권한 |
 | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) | 이 PC 의 환경 문제와 조치 이력 |
 | [CLAUDE.md](CLAUDE.md) | 레포 규약: 글쓰기, 검증 기록, 작업 절차 |
