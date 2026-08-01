@@ -1,0 +1,14 @@
+server:
+  port: 8280
+  # 바인딩 주소를 명시한다. 기본값(IPv6 와일드카드)에 의존하면 이 PC 에서 기동이 실패한다.
+  address: 0.0.0.0
+
+spring:
+  application:
+    name: camp
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

@@ -71,34 +71,34 @@ Docker 컨테이너 안에서 빌드(호스트 Winsock 우회) → `docker run -
 **서버 바인딩은 반드시 `0.0.0.0` 또는 `127.0.0.1`을 명시**한다. 와일드카드 기본값(`::`)에
 의존하면 위 문제가 재발한다. (Winsock 복구 후에도 명시적 바인딩을 유지 — 재현성 확보)
 
-## 3. 검증된 버전 (2026-08-01 Maven Central / services.gradle.org 조회)
+## 3. 확정 버전 (2026-08-02 이슈 #31에서 실제 빌드로 검증)
 
 | 대상 | 버전 | 비고 |
 |---|---|---|
-| Gradle | 9.6.1 | sha256 `9c0f7fae…9e14` |
-| JDK | Temurin 21.0.7 | 설치 확인됨 |
-| Spring Boot | 3.5.3 | Gradle 9 호환 여부 D1에서 빌드로 확인 |
-| Spring AI BOM | 1.0.0 | 정식 릴리스(M/RC 아님) |
-| Oracle JDBC (ojdbc11) | 23.8.0.25.04 | 23ai 계열 |
+| JDK | Temurin 21.0.9 | 설치 확인됨 |
+| Gradle | 8.14.5 | 래퍼 커밋됨. sha256 `6f74b601…e854` 검증 |
+| Spring Boot | 3.5.16 | |
+| Spring AI BOM | 1.1.8 | Boot 3.5 호환 라인 |
+| Oracle JDBC (ojdbc11) | 23.26.3.0.0 | 23ai 계열 |
+| ArchUnit | 1.4.2 | |
 | Docker | 28.3.2 / 메모리 7.58GiB | Oracle Free 2GB+ 요건 충족 |
 
-## 4. 오프라인 자산
+**Gradle을 9.6.1에서 8.14.5로 내렸다.** Spring Boot 3.5.x의 Gradle 플러그인이
+Gradle 7.6.4+ / 8.4+ 만 지원하고 9는 지원하지 않기 때문이다. 판단 근거와 버린 대안
+(Boot 4.1.0 + Spring AI 2.0.0)은 `docs/adr/002-빌드-툴체인-버전조합.md` 참조.
 
-Gradle 배포판을 이미 받아뒀다 (재다운로드 불필요, 네트워크 불안정 대비):
+버전 단일 출처는 `gradle/libs.versions.toml`이며, 이 표는 그 사본이 아니라
+"이 PC에서 실제로 빌드가 통과한 조합"의 기록이다.
 
-```
-<scratchpad>/gradle-9.6.1-bin.zip      (140,682,664 bytes, 체크섬 검증 완료)
-<scratchpad>/gradle-9.6.1/bin/gradle   (압축 해제됨)
-```
+## 4. 빌드 실행
 
-`<scratchpad>` =
-`C:\Users\oo\AppData\Local\Temp\claude\C--Users-oo-file-project-tripbook\c619b220-d998-4b3b-a63d-78028e2638c4\scratchpad`
-
-Winsock 복구 후 이 gradle로 래퍼를 생성한다:
+래퍼가 레포에 있으므로 Gradle 별도 설치가 필요 없다.
 
 ```bash
-cd C:/Users/oo/file/project/camp
-<scratchpad>/gradle-9.6.1/bin/gradle wrapper --gradle-version 9.6.1
+export JAVA_HOME="/c/Program Files/Eclipse Adoptium/jdk-21.0.9.10-hotspot"
+./gradlew build
+./gradlew :adapter-web:bootRun          # http://127.0.0.1:8280/actuator/health
+./gradlew resolveAndLockAll --write-locks   # 의존성 변경 후 잠금 갱신
 ```
 
 ## 5. 로컬 ↔ 원격 git 불일치 (**2026-08-02 해결됨**)

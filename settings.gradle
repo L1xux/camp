@@ -1,0 +1,9 @@
+rootProject.name = 'camp'
+
+// 헥사고날 모듈 구성. 의존 방향은 각 build.gradle 선언과 ArchitectureTest 가 강제한다.
+include 'domain'
+include 'application'
+include 'adapter-web'
+include 'adapter-mcp'
+include 'adapter-batch'
+include 'infra'

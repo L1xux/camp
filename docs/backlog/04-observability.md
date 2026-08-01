@@ -30,7 +30,7 @@
 - RAG 검색(retrieval)은 하위 span으로 분리 — 검색이 느린지 생성이 느린지 구분 가능해야 함
 - `request_id`를 trace 속성으로 첨부 (로그 ↔ Sentry ↔ trace 상호 추적)
 - 도구 선정: Langfuse Java SDK 지원 수준 확인 후, 미흡하면 Spring AI Observability
-  (Micrometer Tracing) + OTLP 수집기로 결정 — 근거를 ADR-003으로 기록
+  (Micrometer Tracing) + OTLP 수집기로 결정 — 근거를 ADR-004로 기록
 
 **외부 호출 공통 정책 (공통 모듈, 모든 HTTP 클라이언트가 경유)**
 - 명시적 타임아웃 필수: connect / read 각각 설정, 무한 대기 금지
@@ -80,6 +80,6 @@
 ## 완료 조건
 
 - [ ] 요청 1건으로 로그 → Sentry → trace가 같은 request_id로 연결됨을 시연
-- [ ] LLM 트레이싱 도구 선정이 ADR-003으로 기록됨
+- [ ] LLM 트레이싱 도구 선정이 ADR-004로 기록됨
 - [ ] 외부 호출이 공통 모듈을 우회할 수 없는 구조 (직접 HTTP 클라이언트 생성을
       ArchUnit 또는 리뷰 체크리스트로 차단)

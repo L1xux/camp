@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 환경 변수 (시크릿) — .env.example 만 커밋한다
+.env
+.env.local
+
+# 로그
+*.log
