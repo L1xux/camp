@@ -41,7 +41,8 @@ subprojects {
         }
     }
 
-    // 잠금 상태에 없는 의존성이 해석되면 빌드 실패. 갱신은 resolveAndLockAll --write-locks
+    // 잠금보다 높은 버전을 요구하거나 잠금에 없는 의존성이 나오면 빌드 실패.
+    // 갱신은 resolveAndLockAll --write-locks
     dependencyLocking {
         lockAllConfigurations()
     }
