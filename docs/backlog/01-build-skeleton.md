@@ -57,7 +57,9 @@ Gradle 의존성 선언과 ArchUnit 테스트로 빌드 시점에 강제한다.
 - [ ] `./gradlew :domain:dependencies` 출력에 외부 라이브러리 0건 (JDK만)
 - [ ] `domain` 소스에 `import org.springframework.stereotype.Service;` 추가 → 컴파일 실패
 - [ ] `adapter-web` 소스에서 `infra`의 구현 클래스 import → 컴파일 실패
-- [ ] 잠금 파일과 다른 버전을 강제 지정 → 빌드 실패
+- [ ] 잠금 상태에 없는 라이브러리를 추가 → 빌드 실패
+      (버전만 다르게 지정하면 잠금 버전으로 강제 해석되어 통과한다. 실패 조건은 잠금에
+      없는 의존성이 나타나는 경우다)
 
 **ArchUnit**
 - [ ] domain의 Spring/JPA/Jackson import 금지 규칙 3건 각각 통과
