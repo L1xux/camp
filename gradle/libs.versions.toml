@@ -2,7 +2,7 @@
 
 [versions]
 spring-boot = "3.5.16"
-spring-ai = "1.1.8"
+spring-ai = "2.0.0"
 ojdbc = "23.26.3.0.0"
 junit = "5.12.2"
 assertj = "3.27.7"
