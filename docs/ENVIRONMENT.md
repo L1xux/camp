@@ -169,8 +169,37 @@ export PATH="$PATH:/c/Program Files/GitHub CLI"     # gh 2.97.0
 ```
 <!-- verified: 2026-08-02 | gh auth status -> Logged in to github.com account L1xux / gitleaks git -> 32 commits scanned, no leaks found -->
 
+`pre-commit` 은 pyenv 의 Python 3.11.9 에 설치했다. `pip install` 직후에는 shim 이 없어
+`command not found` 가 난다. `pyenv rehash` 를 한 번 실행해야 `PATH` 에서 잡힌다.
+
+```
+$ pip install pre-commit && pre-commit --version
+bash: pre-commit: command not found
+$ pyenv rehash && pre-commit --version
+pre-commit 4.6.1
+```
+<!-- verified: 2026-08-02 | 위 명령 그대로 -->
+
 `gh` 는 `L1xux` 계정으로 인증돼 있고 토큰은 keyring 에 있다. 스코프는 `gist`, `read:org`,
 `repo`, `workflow`. `gh auth login` 은 브라우저를 여는 대화형 절차라 Claude 가 실행할 수 없다.
+
+**gitleaks 로 차단을 시연할 때 순차 문자열을 쓰면 탐지되지 않는다.** 기본 룰셋에 엔트로피
+검사가 있어서 `sk-abcdefghijk...` 같은 값은 통과한다. 무작위 문자열을 써야 한다.
+
+```
+# 순차 문자열: sk- 뒤에 abcdefghij...0123456789 를 이어붙인 값
+$ gitleaks dir . --no-banner
+INF no leaks found
+
+# 무작위 문자열: tr -dc 'A-Za-z0-9' < /dev/urandom 으로 만든 값
+$ gitleaks dir . --no-banner
+WRN leaks found: 1
+```
+<!-- verified: 2026-08-02 | 위 두 값을 각각 파일에 넣고 gitleaks dir 실행 -->
+
+이 문서에 실제 형태의 키를 적으면 gitleaks 가 이 문서를 잡아 커밋이 막힌다. 실제로 한 번
+막혔고, 그래서 값을 설명으로 대체했다.
+<!-- verified: 2026-08-02 | 값을 그대로 적고 git commit -> gitleaks 훅이 leaks found: 1 로 차단 -->
 
 **Bash 도구에서 PowerShell 문법을 쓰지 않는다.** here-string(`@'...'@`)을 커밋 메시지에
 쓰면 리터럴 `@` 가 제목에 박힌다. 여러 줄 문자열은 heredoc 이나 `git commit -F -` 로 넘긴다.
