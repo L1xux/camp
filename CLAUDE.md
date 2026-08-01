@@ -83,8 +83,22 @@
 
 `gradle/libs.versions.toml` 이 버전의 단일 출처다. 버전을 다른 곳에 직접 쓰지 않는다.
 
-- Java 21 (Temurin), Gradle 8.14.5, Spring Boot 3.5.16, Spring AI 1.1.8, Oracle 23ai
-- 조합 근거: `docs/adr/002-빌드-툴체인-버전조합.md`
+- Java 21 (Temurin), Gradle 8.14.5, Spring Boot 3.5.16, Spring AI 1.1.8
+- Oracle Database Free 23ai, Liquibase 4.31.1
+- 조합 근거: `docs/adr/002-빌드-툴체인-버전조합.md`, `docs/adr/003-마이그레이션-도구-Liquibase.md`
+
+## DB 스키마 변경 규칙
+
+스키마는 Liquibase 마이그레이션 파일로만 바꾼다. 수동 `ALTER` 금지.
+
+1. `infra/src/main/resources/db/changelog/changes/V00N__설명.sql` 을 새로 만든다.
+2. `db.changelog-master.yaml` 아래에 `include` 를 추가한다. 기존 항목은 건드리지 않는다.
+3. **각 changeset 에 `--rollback` 을 함께 쓴다.** 되돌려도 데이터가 복구되지 않는 변경
+   (컬럼 삭제 등)은 그 사실을 `--comment` 에 명시한다.
+4. **이미 적용된 파일은 절대 수정하지 않는다.** 체크섬이 달라져 앱 기동이 거부된다.
+   고칠 것이 있으면 새 버전 파일을 추가한다.
+
+실패한 마이그레이션 복구와 잠금 해제 절차는 `docs/RUNBOOK.md` 에 있다.
 
 ## 모듈 구조
 

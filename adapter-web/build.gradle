@@ -20,3 +20,8 @@ dependencies {
     testImplementation libs.archunit.junit5
     testImplementation libs.spring.boot.starter.test
 }
+
+// 기본값은 이 모듈 디렉터리다. 레포 루트의 .env 를 읽어야 하므로 루트로 맞춘다.
+tasks.named('bootRun') {
+    workingDir = rootProject.projectDir
+}

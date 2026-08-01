@@ -58,9 +58,33 @@ git ls-remote origin
 1번의 `bind ::` 가 여전히 FAIL 이면 Gradle은 못 돈다. 그 경우의 대안(미검증):
 Docker 컨테이너 안에서 빌드(호스트 Winsock 우회) → `docker run --rm -v $PWD:/w -w /w gradle:9.6.1-jdk21 gradle build`
 
+## 1-2. 이슈 #32 에서 겪은 문제 (2026-08-02)
+
+**`bootRun` 이 레포 루트의 `.env` 를 못 읽음**
+
+`bootRun` 의 기본 작업 디렉터리는 실행 모듈 디렉터리(`adapter-web/`)다.
+`spring.config.import: optional:file:./.env[.properties]` 가 `adapter-web/.env` 를 찾아
+아무것도 못 읽었고, DB 접속이 `ORA-01017: invalid credential` 로 실패했다.
+
+조치: `adapter-web/build.gradle` 에서 `bootRun.workingDir = rootProject.projectDir` 로 고정.
+
+**DB 가 멈추면 헬스 엔드포인트가 응답하지 않음**
+
+컨테이너를 정지시킨 상태에서 `/actuator/health` 를 호출하니 `DOWN` 을 반환하지 않고
+15초 타임아웃까지 멈춰 있었다. 커넥션 획득 타임아웃이 없어서다.
+
+조치: `spring.datasource.hikari.connection-timeout: 5000` 과
+`oracle.net.CONNECT_TIMEOUT` 을 설정. 이후 5.5초 만에 `DOWN` 을 반환한다.
+
+**컨테이너 기동 실패는 겪지 않았다**
+
+`docker compose up -d` 는 한 번에 성공했다. 헬스체크가 `healthy` 가 되기까지 40초 안팎이
+걸린다. 그 전에 접속하면 `ORA-12514: FREEPDB1 서비스가 리스너에 등록되지 않았습니다` 가 난다.
+메모리는 Docker 에 7.58GiB 가 있어 Oracle Free 요건(2GB+)을 넘는다.
+
 ## 2. 로컬 실행 포트
 
-5173·8000·5273·8273은 다른 프로젝트가 점유 중이므로 CAMP는 다음을 쓴다:
+5173, 8000, 5273, 8273은 다른 프로젝트가 점유 중이므로 CAMP는 다음을 쓴다:
 
 | 용도 | 포트 |
 |---|---|

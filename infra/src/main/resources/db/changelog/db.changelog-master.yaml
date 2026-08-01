@@ -1,0 +1,4 @@
+# 마이그레이션 진입점. 새 버전은 아래에 include 를 추가한다 (기존 항목은 수정하지 않는다).
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/V001__baseline.sql
