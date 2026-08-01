@@ -1,0 +1,24 @@
+# 설치: pip install pre-commit && pre-commit install
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: gitleaks (시크릿 스캔)
+        entry: bash tools/gitleaks.sh
+        language: system
+        pass_filenames: false
+
+      - id: spotless
+        name: spotless (Java 포맷)
+        entry: bash tools/spotless-staged.sh
+        language: system
+        files: \.java$
+        pass_filenames: false

@@ -4,13 +4,12 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.Set;
-
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,32 +50,47 @@ class ArchitectureTest {
     @Test
     @DisplayName("domain 은 Spring 을 참조하지 않는다")
     void domainDoesNotDependOnSpring() {
-        noClasses().that().resideInAPackage("com.camp.domain..")
-                .should().dependOnClassesThat().resideInAnyPackage("org.springframework..")
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.domain..")
+                .should()
+                .dependOnClassesThat()
+                .resideInAnyPackage("org.springframework..")
                 .check(classes);
     }
 
     @Test
     @DisplayName("domain 은 JPA 를 참조하지 않는다")
     void domainDoesNotDependOnJpa() {
-        noClasses().that().resideInAPackage("com.camp.domain..")
-                .should().dependOnClassesThat().resideInAnyPackage("jakarta.persistence..")
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.domain..")
+                .should()
+                .dependOnClassesThat()
+                .resideInAnyPackage("jakarta.persistence..")
                 .check(classes);
     }
 
     @Test
     @DisplayName("domain 은 Jackson 을 참조하지 않는다")
     void domainDoesNotDependOnJackson() {
-        noClasses().that().resideInAPackage("com.camp.domain..")
-                .should().dependOnClassesThat().resideInAnyPackage("com.fasterxml..")
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.domain..")
+                .should()
+                .dependOnClassesThat()
+                .resideInAnyPackage("com.fasterxml..")
                 .check(classes);
     }
 
     @Test
     @DisplayName("domain 은 바깥 계층을 참조하지 않는다")
     void domainDoesNotDependOnOuterLayers() {
-        noClasses().that().resideInAPackage("com.camp.domain..")
-                .should().dependOnClassesThat()
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.domain..")
+                .should()
+                .dependOnClassesThat()
                 .resideInAnyPackage("com.camp.application..", "com.camp.adapter..", "com.camp.infra..")
                 .check(classes);
     }
@@ -84,8 +98,11 @@ class ArchitectureTest {
     @Test
     @DisplayName("application 은 adapter 와 infra 를 참조하지 않는다")
     void applicationDoesNotDependOnAdaptersOrInfra() {
-        noClasses().that().resideInAPackage("com.camp.application..")
-                .should().dependOnClassesThat()
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.application..")
+                .should()
+                .dependOnClassesThat()
                 .resideInAnyPackage("com.camp.adapter..", "com.camp.infra..")
                 .check(classes);
     }
@@ -93,16 +110,24 @@ class ArchitectureTest {
     @Test
     @DisplayName("adapter 는 infra 를 참조하지 않는다")
     void adaptersDoNotDependOnInfra() {
-        noClasses().that().resideInAPackage("com.camp.adapter..")
-                .should().dependOnClassesThat().resideInAnyPackage("com.camp.infra..")
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.adapter..")
+                .should()
+                .dependOnClassesThat()
+                .resideInAnyPackage("com.camp.infra..")
                 .check(classes);
     }
 
     @Test
     @DisplayName("infra 는 adapter 를 참조하지 않는다")
     void infraDoesNotDependOnAdapters() {
-        noClasses().that().resideInAPackage("com.camp.infra..")
-                .should().dependOnClassesThat().resideInAnyPackage("com.camp.adapter..")
+        noClasses()
+                .that()
+                .resideInAPackage("com.camp.infra..")
+                .should()
+                .dependOnClassesThat()
+                .resideInAnyPackage("com.camp.adapter..")
                 .check(classes);
     }
 }

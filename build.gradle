@@ -1,6 +1,8 @@
 plugins {
     // 클래스패스에만 올린다. 실제 적용은 부트 모듈인 adapter-web 에서.
     alias(libs.plugins.spring.boot) apply false
+    // 포맷 검사는 모든 모듈에 적용한다. 실제 적용은 아래 subprojects 블록에서.
+    alias(libs.plugins.spotless) apply false
 }
 
 allprojects {
@@ -10,9 +12,22 @@ allprojects {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'com.diffplug.spotless'
 
     repositories {
         mavenCentral()
+    }
+
+    spotless {
+        // 명시하지 않으면 Windows 는 CRLF, CI 의 리눅스는 LF 를 요구해 검사 결과가 갈린다.
+        lineEndings = com.diffplug.spotless.LineEnding.UNIX
+
+        java {
+            palantirJavaFormat(libs.versions.palantir.java.format.get())
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
     }
 
     java {

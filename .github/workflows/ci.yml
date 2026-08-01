@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# 같은 브랜치에 연달아 push 하면 이전 실행을 취소한다.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: 정적 분석
+        run: ./gradlew spotlessCheck
+
+      - name: 테스트 (ArchUnit 포함)
+        run: ./gradlew test
+
+      - name: 골든셋 평가
+        # 값 안의 콜론 때문에 YAML 스칼라 전체를 따옴표로 감싼다.
+        run: 'echo "eval: pending #16"'
+
+      - name: 테스트 리포트 업로드
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/'
+          retention-days: 7
+
+  # 규약 위반을 경고로만 알린다. 머지를 막지 않으므로 브랜치 보호의 필수 체크에 넣지 않는다.
+  guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 커밋 메시지 규약
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: bash .github/scripts/check-commit-messages.sh
+
+      - name: PR 크기
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: bash .github/scripts/check-pr-size.sh
