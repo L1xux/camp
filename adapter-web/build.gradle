@@ -12,14 +12,11 @@ dependencies {
     implementation libs.spring.boot.starter.actuator
 
     // 런타임 조립. 컴파일 타임에 보이지 않으므로 구현체를 직접 참조할 수 없다.
+    // testRuntimeClasspath 에도 포함되므로 ArchitectureTest 가 이 세 모듈까지 스캔한다.
     runtimeOnly project(':infra')
     runtimeOnly project(':adapter-mcp')
     runtimeOnly project(':adapter-batch')
 
-    // 아키텍처 테스트가 전 모듈 클래스를 스캔해야 하므로 테스트 클래스패스에만 올린다.
-    testImplementation project(':infra')
-    testImplementation project(':adapter-mcp')
-    testImplementation project(':adapter-batch')
     testImplementation libs.archunit.junit5
     testImplementation libs.spring.boot.starter.test
 }
