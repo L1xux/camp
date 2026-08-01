@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/** 모듈 의존 방향을 상시 검증한다. build.gradle 의 컴파일 차단이 1차, 이 테스트가 2차 방어선이다. */
+/** 컴파일된 클래스를 읽어 의존성 규칙 위반을 찾는다. build.gradle 수정으로 컴파일 에러를 없앤 경우가 검사 대상이다. */
 class ArchitectureTest {
 
     private static JavaClasses classes;
