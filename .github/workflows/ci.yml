@@ -45,3 +45,26 @@ jobs:
           name: test-reports
           path: '**/build/reports/tests/'
           retention-days: 7
+
+  # 규약 위반을 경고로만 알린다. 머지를 막지 않으므로 브랜치 보호의 필수 체크에 넣지 않는다.
+  guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 커밋 메시지 규약
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: bash .github/scripts/check-commit-messages.sh
+
+      - name: PR 크기
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: bash .github/scripts/check-pr-size.sh

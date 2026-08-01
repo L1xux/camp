@@ -104,6 +104,9 @@ pre-commit install
 
 `main` 은 보호돼 있다. 직접 push 할 수 없고 PR 과 CI 통과를 거쳐야 머지된다.
 
+커밋 메시지 형식과 PR 크기는 CI 의 `guard` job 이 검사해 **경고만** 남긴다. 머지는 막지
+않는다. 규약을 벗어난 커밋과 상한 초과는 PR 화면의 Annotations 에 뜬다.
+
 ### main 에 실수로 커밋했을 때
 
 push 가 거부된다. 커밋을 새 브랜치로 옮기고 `main` 을 원격 상태로 되돌린다.
