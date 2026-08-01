@@ -15,9 +15,9 @@ UiJin 검토 후 GitHub Issues로 등록한다. 등록 전까지 커밋하지 �
 | # | 파일 | 제목 | 마일스톤 | 비고 |
 |---|---|---|---|---|
 | 01 | 01-build-skeleton.md | Gradle 멀티모듈 골격 — 헥사고날 아키텍처, 의존성 규칙 강제 | D1 | |
-| 02 | 02-local-env.md | 로컬 실행 환경 — docker-compose(Oracle 23ai), DB 마이그레이션 체계 | D1 | ADR-002 유발 |
+| 02 | 02-local-env.md | 로컬 실행 환경 — docker-compose(Oracle 23ai), DB 마이그레이션 체계 | D1 | ADR-003 유발 |
 | 03 | 03-repo-gates.md | 레포 운영 규칙 — 브랜치 보호, 템플릿, pre-commit, CI | D1 | |
-| 04 | 04-observability.md | 관측 기반 — 구조화 로깅, 에러 트래킹, LLM 트레이싱, 외부 호출 정책 | D1 | ADR-003 유발 |
+| 04 | 04-observability.md | 관측 기반 — 구조화 로깅, 에러 트래킹, LLM 트레이싱, 외부 호출 정책 | D1 | ADR-004 유발 |
 | 05 | 05-domain-model.md | 도메인 모델 — 캠페인 상태머신, 결재 규칙, 예산 불변식 | D1 | |
 | 06 | 06-influencer-pool.md | 인플루언서 풀 — 등록, 검색, 프로필, 채널 1:N | D2 | |
 | 07 | 07-campaign.md | 캠페인 — CRUD, 상태 전이 API, 후보 관리, 브랜드 데이터 격리 | D2 | 격리 컴포넌트가 13의 토대 |

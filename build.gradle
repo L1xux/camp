@@ -1,0 +1,59 @@
+plugins {
+    // 클래스패스에만 올린다. 실제 적용은 부트 모듈인 adapter-web 에서.
+    alias(libs.plugins.spring.boot) apply false
+}
+
+allprojects {
+    group = 'com.camp'
+    version = '0.1.0-SNAPSHOT'
+}
+
+subprojects {
+    apply plugin: 'java-library'
+
+    repositories {
+        mavenCentral()
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    dependencies {
+        // domain 은 Spring BOM 을 쓰지 않으므로 테스트 의존성은 junit-bom 으로 관리한다.
+        testImplementation platform(libs.junit.bom)
+        testImplementation libs.junit.jupiter
+        testImplementation libs.assertj.core
+        testRuntimeOnly libs.junit.platform.launcher
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+        testLogging {
+            events 'passed', 'skipped', 'failed'
+            exceptionFormat 'full'
+        }
+    }
+
+    // 잠금 상태에 없는 의존성이 해석되면 빌드 실패. 갱신은 resolveAndLockAll --write-locks
+    dependencyLocking {
+        lockAllConfigurations()
+    }
+
+    tasks.register('resolveAndLockAll') {
+        description = '모든 해석 가능한 구성을 해석해 잠금 파일을 갱신한다 (--write-locks 필요).'
+        notCompatibleWithConfigurationCache('실행 시점에 configuration 을 순회한다')
+        doFirst {
+            assert gradle.startParameter.writeDependencyLocks: '--write-locks 없이 실행할 수 없다'
+        }
+        doLast {
+            configurations.findAll { it.canBeResolved }.each { it.resolve() }
+        }
+    }
+}

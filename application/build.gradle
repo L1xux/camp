@@ -1,0 +1,9 @@
+dependencies {
+    // domain 타입이 유스케이스 시그니처에 드러나므로 api 로 노출한다.
+    api project(':domain')
+
+    implementation platform(libs.spring.boot.dependencies)
+    // 트랜잭션 경계와 빈 선언까지만. spring-web 과 JPA 구현체는 금지.
+    implementation libs.spring.context
+    implementation libs.spring.tx
+}

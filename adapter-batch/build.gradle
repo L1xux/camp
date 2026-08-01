@@ -1,0 +1,8 @@
+// 성과 수집 스케줄러. 배치 잡은 이슈 #40 에서 붙인다.
+dependencies {
+    implementation project(':application')
+    implementation project(':domain')
+
+    implementation platform(libs.spring.boot.dependencies)
+    implementation libs.spring.context
+}
