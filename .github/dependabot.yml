@@ -19,6 +19,9 @@ updates:
       # Gradle 9 는 Boot 3.5 의 Gradle 플러그인이 지원하지 않는다. ADR-002 가 8.14.5 로 내린 결정이다.
       - dependency-name: "gradle-wrapper"
         update-types: ["version-update:semver-major"]
+      # Boot 3.5 의 spring-boot-starter-test 가 JUnit 5 를 가져온다. domain 만 6 을 쓰면 섞인다.
+      - dependency-name: "org.junit:junit-bom"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
