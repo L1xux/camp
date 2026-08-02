@@ -12,6 +12,10 @@ logging:
 spring:
   application:
     name: camp
+  threads:
+    # 요청 처리를 가상 스레드에 맡긴다. MDC 는 ThreadLocal 이라 요청 1건이 한 스레드에서 끝나면 그대로 유지된다.
+    virtual:
+      enabled: true
   # docker-compose 와 같은 .env 를 읽는다. 시크릿을 이 파일에 적지 않기 위한 것.
   config:
     import: optional:file:./.env[.properties]

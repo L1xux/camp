@@ -25,6 +25,7 @@ spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-star
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 
 logback-classic = { module = "ch.qos.logback:logback-classic" }
+micrometer-context-propagation = { module = "io.micrometer:context-propagation" }
 
 liquibase-core = { module = "org.liquibase:liquibase-core" }
 
