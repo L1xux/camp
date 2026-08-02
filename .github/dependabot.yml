@@ -13,6 +13,15 @@ updates:
       # 확인해야 하는 결정이다. ADR-002 에서 3.5 라인을 선택했으므로 자동 PR 을 막는다.
       - dependency-name: "org.springframework.boot:spring-boot-dependencies"
         update-types: ["version-update:semver-major"]
+      # Spring AI 2.0 은 Boot 4 기반이다. Boot 3.5 를 쓰는 동안 올릴 수 없다.
+      - dependency-name: "org.springframework.ai:spring-ai-bom"
+        update-types: ["version-update:semver-major"]
+      # Gradle 9 는 Boot 3.5 의 Gradle 플러그인이 지원하지 않는다. ADR-002 가 8.14.5 로 내린 결정이다.
+      - dependency-name: "gradle-wrapper"
+        update-types: ["version-update:semver-major"]
+      # Boot 3.5 의 spring-boot-starter-test 가 JUnit 5 를 가져온다. domain 만 6 을 쓰면 섞인다.
+      - dependency-name: "org.junit:junit-bom"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
