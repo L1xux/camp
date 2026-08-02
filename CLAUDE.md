@@ -151,6 +151,14 @@ domain      <- application <- adapter-web / adapter-mcp / adapter-batch
 
 위반하면 컴파일 에러가 나고, `build.gradle` 을 고쳐 우회하면 `ArchitectureTest` 가 실패한다.
 
+## 로그 규칙
+
+로그는 `CampJsonLogFormatter` 를 거쳐 JSON 한 줄로 나가고, 전화번호와 이메일은 출력 직전에
+마스킹된다.
+
+**예외 메시지에 개인정보를 넣지 않는다.** 마스킹 필터는 스택 트레이스 안의 문자열을 거르지
+못하므로, 예외 메시지에 넣은 개인정보는 그대로 로그에 남는다. 식별이 필요하면 ID 를 쓴다.
+
 ## 명령어
 
 ```bash
