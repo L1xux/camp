@@ -10,6 +10,9 @@ dependencies {
     implementation platform(libs.spring.boot.dependencies)
     implementation libs.spring.boot.starter.web
     implementation libs.spring.boot.starter.actuator
+    // 구조화 로그 포맷터가 쓰는 타입. starter 로 딸려오지만 직접 참조하므로 명시한다.
+    implementation libs.spring.boot
+    implementation libs.logback.classic
 
     // 런타임 조립. 컴파일 타임에 보이지 않으므로 구현체를 직접 참조할 수 없다.
     // testRuntimeClasspath 에도 포함되므로 ArchitectureTest 가 이 세 모듈까지 스캔한다.
