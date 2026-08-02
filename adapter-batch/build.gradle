@@ -5,4 +5,8 @@ dependencies {
 
     implementation platform(libs.spring.boot.dependencies)
     implementation libs.spring.context
+    implementation libs.slf4j.api
+
+    // MDC 검증용. 런타임 로깅 구현체는 adapter-web 이 조립한다.
+    testImplementation libs.logback.classic
 }

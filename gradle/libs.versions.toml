@@ -24,6 +24,7 @@ spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-
 spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 
+slf4j-api = { module = "org.slf4j:slf4j-api" }
 logback-classic = { module = "ch.qos.logback:logback-classic" }
 micrometer-context-propagation = { module = "io.micrometer:context-propagation" }
 
