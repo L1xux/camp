@@ -101,11 +101,37 @@ HTTP 200 | time_total=0.006613s
 <!-- verified: 2026-08-02 | 설정별로 application.yml 을 바꿔 bootRun 후 docker compose stop oracle, curl -w time_total -->
 <!-- unverified: 포트가 열린 채 응답만 느려지는 장애는 재현하지 않음 -->
 
-**컨테이너 기동 실패는 겪지 않았다**
+**컨테이너 기동 실패**
 
 `docker compose up -d` 는 한 번에 성공했다. 헬스체크가 `healthy` 가 되기까지 40초 안팎이
 걸린다. 그 전에 접속하면 `ORA-12514: FREEPDB1 서비스가 리스너에 등록되지 않았습니다` 가 난다.
-메모리는 Docker 에 7.58GiB 가 있어 Oracle Free 요건(2GB+)을 넘는다.
+
+*메모리 부족*: 겪지 않았다. Docker 에 7.58GiB 가 있어 Oracle Free 요건(2GB+)을 넘는다.
+부족하면 Docker Desktop 의 Resources 에서 메모리를 올린다.
+<!-- unverified: 메모리를 낮춰 재현하지 않음 -->
+
+*포트 충돌*: 다른 프로세스가 1522 를 잡고 있으면 컨테이너가 뜨지 않는다. 재현은
+`tools/reproduce-port-conflict.sh` 로 한다.
+
+```
+== 이 상태에서 기동 시도
+ Container camp-oracle Starting
+Error response from daemon: ports are not available: exposing port TCP 127.0.0.1:1522 -> 127.0.0.1:0:
+listen tcp4 127.0.0.1:1522: bind: Only one usage of each socket address (protocol/network address/port)
+is normally permitted.
+-- 종료 코드: 1
+```
+
+조치는 점유 프로세스를 찾아 끝내는 것이다. `docker compose` 가 알아서 비켜주지 않는다.
+
+```bash
+netstat -ano | grep ":1522" | grep LISTENING          # 마지막 칸이 PID
+taskkill //PID <PID> //F
+docker compose up -d oracle
+```
+
+bash 의 `kill` 은 Windows 프로세스를 끝내지 못해 포트가 계속 잡혀 있다. `taskkill` 을 쓴다.
+<!-- verified: 2026-08-02 | bash tools/reproduce-port-conflict.sh -->
 
 ## 2. 로컬 실행 포트
 
