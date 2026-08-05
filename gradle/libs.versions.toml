@@ -7,6 +7,7 @@ ojdbc = "23.26.3.0.0"
 junit = "5.12.2"
 assertj = "3.27.7"
 archunit = "1.4.2"
+sentry = "8.52.0"
 spotless = "8.9.0"
 palantir-java-format = "2.96.0"
 
@@ -29,6 +30,8 @@ logback-classic = { module = "ch.qos.logback:logback-classic" }
 micrometer-context-propagation = { module = "io.micrometer:context-propagation" }
 
 liquibase-core = { module = "org.liquibase:liquibase-core" }
+
+sentry-spring-boot-starter-jakarta = { module = "io.sentry:sentry-spring-boot-starter-jakarta", version.ref = "sentry" }
 
 ojdbc11 = { module = "com.oracle.database.jdbc:ojdbc11", version.ref = "ojdbc" }
 

@@ -30,6 +30,14 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
+sentry:
+  # 비어 있으면 이벤트를 보내지 않는다. DSN 발급 전에도 기동은 정상이어야 한다.
+  dsn: ${SENTRY_DSN:}
+  # 전 모듈의 스택 프레임을 in-app 으로 표시해 같은 예외가 한 그룹으로 묶이게 한다.
+  in-app-includes: com.camp
+  # 요청의 IP 와 쿠키를 이벤트에 싣지 않는다. 로그 마스킹과 같은 개인정보 규칙이다.
+  send-default-pii: false
+
 management:
   endpoints:
     web:
