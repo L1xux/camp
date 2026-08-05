@@ -1,7 +1,7 @@
 ---
 name: 기능
 about: 새 기능이나 개선 항목
-title: "[DN] "
+title: ''
 labels: ''
 assignees: ''
 ---
