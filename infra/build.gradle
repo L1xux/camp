@@ -5,6 +5,8 @@ dependencies {
 
     implementation platform(libs.spring.boot.dependencies)
     implementation libs.spring.context
+    // RestClient. 외부 호출은 전부 com.camp.infra.http 의 공통 팩토리를 거친다.
+    implementation libs.spring.web
     implementation libs.spring.boot.starter.jdbc
     implementation libs.liquibase.core
 
