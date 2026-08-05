@@ -4,8 +4,11 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaConstructorCall;
+import com.tngtech.archunit.core.domain.JavaMethodCall;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import java.util.List;
@@ -128,6 +131,46 @@ class ArchitectureTest {
                 .should()
                 .dependOnClassesThat()
                 .resideInAnyPackage("com.camp.adapter..")
+                .check(classes);
+    }
+
+    // 외부 호출 정책(타임아웃, 재시도)은 공통 팩토리가 강제한다. 직접 생성하면 정책 없는 호출이 생긴다.
+    private static final Set<String> HTTP_CLIENT_TYPES = Set.of(
+            "org.springframework.web.client.RestClient",
+            "org.springframework.web.client.RestTemplate",
+            "org.springframework.web.reactive.function.client.WebClient",
+            "java.net.http.HttpClient");
+
+    private static final Set<String> HTTP_CLIENT_FACTORY_METHODS =
+            Set.of("create", "builder", "newBuilder", "newHttpClient");
+
+    private static final Set<String> REQUEST_FACTORY_TYPES = Set.of(
+            "org.springframework.http.client.JdkClientHttpRequestFactory",
+            "org.springframework.http.client.SimpleClientHttpRequestFactory",
+            "org.springframework.http.client.HttpComponentsClientHttpRequestFactory");
+
+    @Test
+    @DisplayName("HTTP 클라이언트는 공통 팩토리 밖에서 생성하지 않는다")
+    void httpClientsAreCreatedOnlyInCommonFactory() {
+        noClasses()
+                .that()
+                .resideOutsideOfPackage("com.camp.infra.http..")
+                .should()
+                .callMethodWhere(new DescribedPredicate<JavaMethodCall>("HTTP 클라이언트 생성 메서드를 호출한다") {
+                    @Override
+                    public boolean test(JavaMethodCall call) {
+                        return HTTP_CLIENT_TYPES.contains(call.getTargetOwner().getFullName())
+                                && HTTP_CLIENT_FACTORY_METHODS.contains(call.getName());
+                    }
+                })
+                .orShould()
+                .callConstructorWhere(new DescribedPredicate<JavaConstructorCall>("HTTP 클라이언트를 직접 생성한다") {
+                    @Override
+                    public boolean test(JavaConstructorCall call) {
+                        String owner = call.getTargetOwner().getFullName();
+                        return HTTP_CLIENT_TYPES.contains(owner) || REQUEST_FACTORY_TYPES.contains(owner);
+                    }
+                })
                 .check(classes);
     }
 }

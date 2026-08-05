@@ -45,5 +45,6 @@ org.springframework:spring-expression:6.2.19=compileClasspath,runtimeClasspath,t
 org.springframework:spring-jcl:6.2.19=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.springframework:spring-jdbc:6.2.19=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.springframework:spring-tx:6.2.19=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.springframework:spring-web:6.2.19=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.yaml:snakeyaml:2.4=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 empty=annotationProcessor,testAnnotationProcessor
