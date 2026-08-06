@@ -49,7 +49,12 @@ subprojects {
     }
 
     tasks.named('test') {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            // 도커 없는 러너에서 통합 테스트를 빼려면 -PexcludeTags=integration 으로 실행한다.
+            if (project.hasProperty('excludeTags')) {
+                excludeTags project.property('excludeTags').split(',')
+            }
+        }
         testLogging {
             events 'passed', 'skipped', 'failed'
             exceptionFormat 'full'
