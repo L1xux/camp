@@ -26,6 +26,9 @@ dependencies {
 
     testImplementation libs.archunit.junit5
     testImplementation libs.spring.boot.starter.test
+    // 통합 테스트가 띄우는 Oracle. 도커가 없으면 해당 테스트만 스킵된다.
+    testImplementation libs.testcontainers.oracle.free
+    testImplementation libs.testcontainers.junit.jupiter
 }
 
 // 기본값은 이 모듈 디렉터리다. 레포 루트의 .env 를 읽어야 하므로 루트로 맞춘다.
