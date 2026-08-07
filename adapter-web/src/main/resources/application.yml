@@ -30,6 +30,11 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
+camp:
+  llm:
+    # 일일 LLM 비용 상한. 도달하면 AI 질의만 막고 운영 API 는 그대로 둔다.
+    daily-cost-cap-usd: 2
+
 sentry:
   # 비어 있으면 이벤트를 보내지 않는다. DSN 발급 전에도 기동은 정상이어야 한다.
   dsn: ${SENTRY_DSN:}

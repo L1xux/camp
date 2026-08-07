@@ -54,7 +54,7 @@ class OracleMigrationIntegrationTest {
                 .isEqualTo(1);
         assertThat(count("SELECT COUNT(*) FROM user_constraints WHERE constraint_name = 'UK_BRAND_CODE'"))
                 .isEqualTo(1);
-        assertThat(count("SELECT COUNT(*) FROM databasechangelog")).isEqualTo(2);
+        assertThat(count("SELECT COUNT(*) FROM databasechangelog")).isEqualTo(3);
     }
 
     private int count(String sql) throws SQLException {
