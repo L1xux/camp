@@ -38,7 +38,7 @@ public class LlmTracingConfiguration {
     @Bean
     @ConditionalOnExpression("!'${LANGFUSE_PUBLIC_KEY:}'.isBlank() && !'${LANGFUSE_SECRET_KEY:}'.isBlank()")
     OtlpHttpSpanExporter langfuseSpanExporter(
-            @Value("${LANGFUSE_HOST:https://cloud.langfuse.com}") String host,
+            @Value("${LANGFUSE_BASE_URL:https://cloud.langfuse.com}") String host,
             @Value("${LANGFUSE_PUBLIC_KEY}") String publicKey,
             @Value("${LANGFUSE_SECRET_KEY}") String secretKey) {
         return buildExporter(host, publicKey, secretKey);
