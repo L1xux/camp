@@ -39,6 +39,10 @@ sentry:
   send-default-pii: false
 
 management:
+  tracing:
+    sampling:
+      # 기본값 0.1 은 요청 열에 아홉을 버린다. 트래픽이 작으니 전수 수집한다.
+      probability: 1.0
   endpoints:
     web:
       exposure:

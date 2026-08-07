@@ -30,6 +30,16 @@ slf4j-api = { module = "org.slf4j:slf4j-api" }
 logback-classic = { module = "ch.qos.logback:logback-classic" }
 micrometer-context-propagation = { module = "io.micrometer:context-propagation" }
 
+# LLM 트레이싱. Micrometer Observation 을 OTel span 으로 바꿔 OTLP 로 내보낸다.
+micrometer-tracing-bridge-otel = { module = "io.micrometer:micrometer-tracing-bridge-otel" }
+opentelemetry-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp" }
+# ChatModel 관측 규약. 실제 모델 구현체는 아직 없고 계측 계약만 쓴다.
+spring-ai-model = { module = "org.springframework.ai:spring-ai-model" }
+
+# 트레이싱 테스트용. span 을 메모리에 모아 검증한다.
+opentelemetry-sdk-testing = { module = "io.opentelemetry:opentelemetry-sdk-testing" }
+spring-ai-vector-store = { module = "org.springframework.ai:spring-ai-vector-store" }
+
 liquibase-core = { module = "org.liquibase:liquibase-core" }
 
 sentry-spring-boot-starter-jakarta = { module = "io.sentry:sentry-spring-boot-starter-jakarta", version.ref = "sentry" }
