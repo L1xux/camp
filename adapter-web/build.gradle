@@ -17,6 +17,11 @@ dependencies {
     implementation libs.micrometer.context.propagation
     // 미처리 예외를 Sentry 로 보낸다. DSN 이 없으면 수집만 꺼진다.
     implementation libs.sentry.spring.boot.starter.jakarta
+    // LLM 트레이싱. 키가 없으면 내보내기만 꺼진다.
+    implementation platform(libs.spring.ai.bom)
+    implementation libs.spring.ai.model
+    implementation libs.micrometer.tracing.bridge.otel
+    implementation libs.opentelemetry.exporter.otlp
 
     // 런타임 조립. 컴파일 타임에 보이지 않으므로 구현체를 직접 참조할 수 없다.
     // testRuntimeClasspath 에도 포함되므로 ArchitectureTest 가 이 세 모듈까지 스캔한다.
@@ -26,6 +31,9 @@ dependencies {
 
     testImplementation libs.archunit.junit5
     testImplementation libs.spring.boot.starter.test
+    // span 검증용 인메모리 수집기와 retrieval 관측 규약.
+    testImplementation libs.opentelemetry.sdk.testing
+    testImplementation libs.spring.ai.vector.store
     // 통합 테스트가 띄우는 Oracle. 도커가 없으면 해당 테스트만 스킵된다.
     testImplementation libs.testcontainers.oracle.free
     testImplementation libs.testcontainers.junit.jupiter
