@@ -36,7 +36,7 @@ jobs:
 
       - name: 골든셋 평가
         # 값 안의 콜론 때문에 YAML 스칼라 전체를 따옴표로 감싼다.
-        run: 'echo "eval: pending #16"'
+        run: 'echo "eval: pending #46"'
 
       - name: 테스트 리포트 업로드
         if: failure()
