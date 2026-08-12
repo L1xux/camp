@@ -4,3 +4,5 @@ databaseChangeLog:
       file: db/changelog/changes/V001__baseline.sql
   - include:
       file: db/changelog/changes/V002__llm_cost_daily.sql
+  - include:
+      file: db/changelog/changes/V003__influencer.sql

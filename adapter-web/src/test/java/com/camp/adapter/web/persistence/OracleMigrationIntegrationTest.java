@@ -54,7 +54,9 @@ class OracleMigrationIntegrationTest {
                 .isEqualTo(1);
         assertThat(count("SELECT COUNT(*) FROM user_constraints WHERE constraint_name = 'UK_BRAND_CODE'"))
                 .isEqualTo(1);
-        assertThat(count("SELECT COUNT(*) FROM databasechangelog")).isEqualTo(3);
+        // 전체 개수로 세면 마이그레이션이 추가될 때마다 이 테스트가 깨진다. V001 의 changeset 2 개만 확인한다.
+        assertThat(count("SELECT COUNT(*) FROM databasechangelog WHERE filename LIKE '%V001%'"))
+                .isEqualTo(2);
     }
 
     private int count(String sql) throws SQLException {
