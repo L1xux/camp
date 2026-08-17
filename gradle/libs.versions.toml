@@ -7,7 +7,7 @@ ojdbc = "23.26.3.0.0"
 junit = "5.12.2"
 assertj = "3.27.7"
 archunit = "1.4.2"
-sentry = "8.52.0"
+sentry = "8.53.0"
 spotless = "8.9.0"
 palantir-java-format = "2.96.0"
 
