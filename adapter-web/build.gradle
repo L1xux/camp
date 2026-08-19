@@ -37,6 +37,8 @@ dependencies {
     // 통합 테스트가 띄우는 Oracle. 도커가 없으면 해당 테스트만 스킵된다.
     testImplementation libs.testcontainers.oracle.free
     testImplementation libs.testcontainers.junit.jupiter
+    // 저장소 통합 테스트가 DataAccessException 계층을 단언한다. 구현체는 여전히 runtimeOnly 다.
+    testImplementation libs.spring.tx
 }
 
 // 기본값은 이 모듈 디렉터리다. 레포 루트의 .env 를 읽어야 하므로 루트로 맞춘다.

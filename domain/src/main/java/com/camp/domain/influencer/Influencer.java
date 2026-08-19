@@ -9,6 +9,7 @@ import java.util.Objects;
 public class Influencer {
 
     private final InfluencerId id;
+    private final long version;
     private InfluencerName name;
     private Category category;
     private Affiliation affiliation;
@@ -18,6 +19,7 @@ public class Influencer {
 
     private Influencer(
             InfluencerId id,
+            long version,
             InfluencerName name,
             Category category,
             Affiliation affiliation,
@@ -25,6 +27,7 @@ public class Influencer {
             InfluencerStatus status,
             List<InfluencerChannel> channels) {
         this.id = id;
+        this.version = version;
         this.name = Objects.requireNonNull(name, "이름은 null 일 수 없다");
         this.category = Objects.requireNonNull(category, "카테고리는 null 일 수 없다");
         this.affiliation = Objects.requireNonNull(affiliation, "소속 정보는 null 일 수 없다");
@@ -35,12 +38,13 @@ public class Influencer {
 
     /** 신규 등록. 저장 전이라 식별자가 없다. */
     public static Influencer register(InfluencerName name, Category category, Affiliation affiliation, String memo) {
-        return new Influencer(null, name, category, affiliation, memo, InfluencerStatus.ACTIVE, List.of());
+        return new Influencer(null, 0, name, category, affiliation, memo, InfluencerStatus.ACTIVE, List.of());
     }
 
     /** 저장소에서 읽어온 상태를 그대로 복원한다. 등록 시점의 기본값을 적용하지 않는다. */
     public static Influencer reconstitute(
             InfluencerId id,
+            long version,
             InfluencerName name,
             Category category,
             Affiliation affiliation,
@@ -48,7 +52,7 @@ public class Influencer {
             InfluencerStatus status,
             List<InfluencerChannel> channels) {
         Objects.requireNonNull(id, "복원에는 식별자가 필요하다");
-        return new Influencer(id, name, category, affiliation, memo, status, channels);
+        return new Influencer(id, version, name, category, affiliation, memo, status, channels);
     }
 
     /** 애그리거트 안의 중복만 막는다. 다른 인플루언서와의 중복은 저장소가 막는다. */
@@ -92,6 +96,11 @@ public class Influencer {
     /** 신규 등록 상태에서는 null 이다. */
     public InfluencerId id() {
         return id;
+    }
+
+    /** 낙관적 잠금용. 저장소가 읽은 시점의 값이고 갱신 성공 시 저장소가 올린다. */
+    public long version() {
+        return version;
     }
 
     public InfluencerName name() {
