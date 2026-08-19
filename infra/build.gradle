@@ -1,4 +1,4 @@
-// application 이 정의한 포트의 구현체. JPA 는 이슈 #36 에서 붙인다.
+// application 이 정의한 포트의 구현체. 저장 계층은 JdbcTemplate 을 쓴다 (docs/adr/005).
 dependencies {
     implementation project(':application')
     implementation project(':domain')
